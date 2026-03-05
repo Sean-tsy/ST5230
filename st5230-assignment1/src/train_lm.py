@@ -253,6 +253,13 @@ def run_experiment(
     with Timer("Data loading & tokenisation"):
         train_texts, train_labels, test_texts, test_labels = load_imdb()
 
+        # Optional: limit training data size for faster iteration
+        max_samples = cfg.data.max_samples
+        if max_samples and max_samples < len(train_texts):
+            train_texts  = train_texts[:max_samples]
+            train_labels = train_labels[:max_samples]
+            print(f"[data] Using {max_samples}/{25000} training samples")
+
         train_tokenized = [tokenize(t) for t in train_texts]
         test_tokenized  = [tokenize(t) for t in test_texts]
 
@@ -484,6 +491,10 @@ def parse_args() -> argparse.Namespace:
                    help="Number of training epochs")
     p.add_argument("--batch_size", type=int, default=64,
                    help="Batch size")
+    p.add_argument("--seq_len", type=int, default=128,
+                   help="LM sequence chunk length (smaller = fewer batches)")
+    p.add_argument("--max_samples", type=int, default=0,
+                   help="Max training reviews to use (0 = all 25k)")
     p.add_argument("--lr", type=float, default=1e-3,
                    help="Learning rate")
     p.add_argument("--seed", type=int, default=42,
@@ -512,6 +523,8 @@ def main() -> None:
         epochs=args.epochs,
         batch_size=args.batch_size,
         # Pass through to sub-configs via **overrides
+        lm_seq_len=args.seq_len,
+        max_samples=args.max_samples,
         mode=args.embedding_mode,
         freeze=args.freeze,
         pretrained_path=args.pretrained_path,

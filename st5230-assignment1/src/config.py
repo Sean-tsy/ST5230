@@ -39,6 +39,9 @@ class DataConfig:
     batch_size: int = 64
     num_workers: int = 0
 
+    # Subset sampling (0 = use all data)
+    max_samples: int = 0
+
 
 # ============================================================
 # 2. Embedding configuration
