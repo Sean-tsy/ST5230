@@ -37,6 +37,7 @@ class DataConfig:
 
     # DataLoader
     batch_size: int = 64
+    eval_batch_size: int = 0       # 0 = use 2× batch_size
     num_workers: int = 0
 
     # Subset sampling (0 = use all data)

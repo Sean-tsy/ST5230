@@ -6,4 +6,4 @@ outputs/
 # embeddings
 *.vec
 *.bin
-*.txt
+src/*.txt

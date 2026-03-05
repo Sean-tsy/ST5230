@@ -277,6 +277,7 @@ def run_experiment(
             train_ids, test_ids, word2idx,
             seq_len=cfg.data.lm_seq_len,
             batch_size=cfg.data.batch_size,
+            eval_batch_size=cfg.data.eval_batch_size,
             num_workers=cfg.data.num_workers,
         )
 
@@ -491,6 +492,8 @@ def parse_args() -> argparse.Namespace:
                    help="Number of training epochs")
     p.add_argument("--batch_size", type=int, default=64,
                    help="Batch size")
+    p.add_argument("--eval_batch_size", type=int, default=0,
+                   help="Eval batch size (0 = 2x batch_size)")
     p.add_argument("--seq_len", type=int, default=128,
                    help="LM sequence chunk length (smaller = fewer batches)")
     p.add_argument("--max_samples", type=int, default=0,
@@ -523,6 +526,7 @@ def main() -> None:
         epochs=args.epochs,
         batch_size=args.batch_size,
         # Pass through to sub-configs via **overrides
+        eval_batch_size=args.eval_batch_size,
         lm_seq_len=args.seq_len,
         max_samples=args.max_samples,
         mode=args.embedding_mode,

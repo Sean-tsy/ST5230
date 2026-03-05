@@ -150,6 +150,7 @@ def get_lm_dataloaders(
     word2idx: Dict[str, int],
     seq_len: int = 128,
     batch_size: int = 64,
+    eval_batch_size: int = 0,
     num_workers: int = 0,
 ) -> Tuple[DataLoader, DataLoader]:
     """
@@ -157,13 +158,16 @@ def get_lm_dataloaders(
 
     Parameters
     ----------
-    train_ids   : tokenised & id-converted training texts
-    test_ids    : tokenised & id-converted test texts
-    word2idx    : shared vocabulary
-    seq_len     : chunk length for each (x, y) sample
-    batch_size  : mini-batch size 
-    num_workers : parallel data-loading workers
+    train_ids        : tokenised & id-converted training texts
+    test_ids         : tokenised & id-converted test texts
+    word2idx         : shared vocabulary
+    seq_len          : chunk length for each (x, y) sample
+    batch_size       : mini-batch size for training
+    eval_batch_size  : mini-batch size for evaluation (0 = 2× batch_size)
+    num_workers      : parallel data-loading workers
     """
+    if eval_batch_size <= 0:
+        eval_batch_size = batch_size * 2
 
     train_dataset = LanguageModelDataset(train_ids, word2idx, seq_len=seq_len)
     test_dataset  = LanguageModelDataset(test_ids,  word2idx, seq_len=seq_len)
@@ -177,7 +181,7 @@ def get_lm_dataloaders(
     )
     test_loader = DataLoader(
         test_dataset,
-        batch_size=batch_size,
+        batch_size=eval_batch_size,
         shuffle=False,
         num_workers=num_workers,
         drop_last=False,
@@ -246,6 +250,7 @@ def get_sentiment_dataloaders(
     test_labels: List[int],
     max_len: int = 512,
     batch_size: int = 64,
+    eval_batch_size: int = 0,
     num_workers: int = 0,
 ) -> Tuple[DataLoader, DataLoader]:
     """
@@ -253,14 +258,17 @@ def get_sentiment_dataloaders(
 
     Parameters
     ----------
-    train_ids    : tokenised & id-converted training texts
-    train_labels : training sentiment labels (0/1)
-    test_ids     : tokenised & id-converted test texts
-    test_labels  : test sentiment labels (0/1)
-    max_len      : max tokens per review (longer reviews are truncated)
-    batch_size   : mini-batch size
-    num_workers  : parallel data-loading workers
+    train_ids       : tokenised & id-converted training texts
+    train_labels    : training sentiment labels (0/1)
+    test_ids        : tokenised & id-converted test texts
+    test_labels     : test sentiment labels (0/1)
+    max_len         : max tokens per review (longer reviews are truncated)
+    batch_size      : mini-batch size for training
+    eval_batch_size : mini-batch size for evaluation (0 = 2× batch_size)
+    num_workers     : parallel data-loading workers
     """
+    if eval_batch_size <= 0:
+        eval_batch_size = batch_size * 2
 
     train_dataset = SentimentDataset(train_ids, train_labels, max_len=max_len)
     test_dataset  = SentimentDataset(test_ids,  test_labels,  max_len=max_len)
@@ -275,7 +283,7 @@ def get_sentiment_dataloaders(
     )
     test_loader = DataLoader(
         test_dataset,
-        batch_size=batch_size,
+        batch_size=eval_batch_size,
         shuffle=False,
         collate_fn=collate_sentiment,
         num_workers=num_workers,

@@ -210,7 +210,7 @@ def epoch_progress_bar(
     return tqdm(
         dataloader,
         desc=f"{desc} [{epoch}/{total_epochs}]",
-        leave=True,
+        leave=False,
         dynamic_ncols=True,
     )
 

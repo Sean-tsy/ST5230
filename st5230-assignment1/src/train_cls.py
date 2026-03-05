@@ -406,6 +406,7 @@ def run_cls_experiment(
             train_ids, train_labels, test_ids, test_labels,
             max_len=cfg.data.sentiment_max_len,
             batch_size=cfg.data.batch_size,
+            eval_batch_size=cfg.data.eval_batch_size,
             num_workers=cfg.data.num_workers,
         )
 
@@ -599,6 +600,8 @@ def parse_args() -> argparse.Namespace:
                    help="Number of training epochs")
     p.add_argument("--batch_size", type=int, default=64,
                    help="Batch size")
+    p.add_argument("--eval_batch_size", type=int, default=0,
+                   help="Eval batch size (0 = 2x batch_size)")
     p.add_argument("--lr", type=float, default=1e-3,
                    help="Learning rate")
     p.add_argument("--seed", type=int, default=42,
@@ -620,6 +623,7 @@ def main() -> None:
         seed=args.seed,
         epochs=args.epochs,
         batch_size=args.batch_size,
+        eval_batch_size=args.eval_batch_size,
         mode=args.embedding_mode,
         pretrained_path=args.pretrained_path,
         learning_rate=args.lr,
