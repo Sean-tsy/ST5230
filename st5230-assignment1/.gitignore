@@ -3,3 +3,7 @@ outputs/
 *.pt
 *.pth
 *.log
+# embeddings
+*.vec
+*.bin
+*.txt
