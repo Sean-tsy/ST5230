@@ -393,11 +393,20 @@ def run_cls_experiment(
         train_tokenized = [tokenize(t) for t in train_texts]
         test_tokenized  = [tokenize(t) for t in test_texts]
 
-        word2idx = build_vocab(
-            train_tokenized,
-            max_vocab_size=cfg.data.max_vocab_size,
-            min_freq=cfg.data.min_freq,
-        )
+        # Load vocab from LM experiment dir to guarantee consistency
+        lm_dir = os.path.dirname(cfg.paths.lm_checkpoint_path)
+        vocab_path = os.path.join(lm_dir, "vocab.json")
+        if os.path.isfile(vocab_path):
+            with open(vocab_path) as f:
+                word2idx = json.load(f)
+            print(f"[data] Loaded LM vocab ({len(word2idx)} words) ← {vocab_path}")
+        else:
+            print(f"[data] WARNING: vocab.json not found in {lm_dir}, rebuilding from scratch")
+            word2idx = build_vocab(
+                train_tokenized,
+                max_vocab_size=cfg.data.max_vocab_size,
+                min_freq=cfg.data.min_freq,
+            )
 
         train_ids = texts_to_ids(train_tokenized, word2idx)
         test_ids  = texts_to_ids(test_tokenized, word2idx)

@@ -181,9 +181,13 @@ def run_ngram_experiment(
     )
 
     # -------------------------------------------------------
-    # Step 8  Save config & results
+    # Step 8  Save config, vocab & results
     # -------------------------------------------------------
     cfg.save()
+    vocab_path = os.path.join(cfg.paths.experiment_dir, "vocab.json")
+    with open(vocab_path, "w") as f:
+        json.dump(word2idx, f)
+    print(f"[data] Vocab saved → {vocab_path}")
 
     results = {
         "experiment_id": cfg.experiment_id,

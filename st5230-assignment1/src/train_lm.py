@@ -288,6 +288,12 @@ def run_experiment(
     # -------------------------------------------------------
     # Step 4  Model  (embedding is built inside the model constructor)
     # -------------------------------------------------------
+    # Auto-set word2vec save path if not specified
+    if cfg.embedding.mode == "word2vec" and not cfg.embedding.w2v_save_path:
+        cfg.embedding.w2v_save_path = os.path.join(
+            cfg.paths.experiment_dir, "word2vec.model"
+        )
+
     with Timer("Model construction"):
         model = build_model(
             cfg, word2idx,
@@ -316,8 +322,12 @@ def run_experiment(
     patience_counter = 0
     best_epoch = -1
 
-    # Save config before training starts
+    # Save config and vocabulary before training starts
     cfg.save()
+    vocab_path = os.path.join(cfg.paths.experiment_dir, "vocab.json")
+    with open(vocab_path, "w") as f:
+        json.dump(word2idx, f)
+    print(f"[data] Vocab saved → {vocab_path}")
 
     print(f"\n{'─' * 60}")
     print(f"  Training for {cfg.train.epochs} epochs")
