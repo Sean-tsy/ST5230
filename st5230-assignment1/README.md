@@ -63,12 +63,8 @@ python src/train_lm.py --model_type transformer --embed_dim 128 --batch_size 512
 ### Experiment 2 — Embedding Ablation
 
 Compare scratch, Word2Vec, and frozen GloVe embeddings on the Transformer LM, each with 3 seeds.
-
-```bash
-bash run_exp2.sh
-```
-
-Or run individually:
+ 
+run individually:
 
 ```bash
 # Scratch
