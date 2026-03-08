@@ -68,6 +68,7 @@ run individually:
 
 ```bash
 # Scratch
+# change seed for each configuration
 python src/train_lm.py --model_type transformer --embedding_mode scratch \
     --embed_dim 100 --batch_size 512 --seq_len 64 --max_samples 6000 \
     --epochs 3 --seed 42 --output_dir outputs/exp2
